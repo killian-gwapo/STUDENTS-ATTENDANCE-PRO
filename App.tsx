@@ -5,6 +5,7 @@ import { parseStudentList } from './services/geminiService';
 import { QRCard } from './components/QRCard';
 import { Scanner } from './components/Scanner';
 import JSZip from 'jszip';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 type SortKey = 'name' | 'id';
 type SortOrder = 'asc' | 'desc';
@@ -270,6 +271,41 @@ const App: React.FC = () => {
     setIsLoading(false);
   };
 
+  const exportSessionAsTxt = async (session: AttendanceSession) => {
+    try {
+      // 1. Create the Header
+      let fileContent = "STUDENT NAME".padEnd(30) + "TIME LOG\n";
+      fileContent += "------------------------------------------------------------\n";
+
+      // 2. Fill the rows with names and times
+      session.records.forEach(record => {
+        const student = students.find(s => s.id === record.studentId);
+        const name = (student?.name || "Unknown").padEnd(30);
+        const time = new Date(record.timestamp).toLocaleString();
+        fileContent += `${name}${time}\n`;
+      });
+
+      // 3. Set the Filename (e.g., Attendance_Grade10_2025-12-18.txt)
+      const sectionName = sections.find(s => s.id === session.sectionId)?.name || "Section";
+      const dateStr = session.date.replace(/\//g, '-');
+      const fileName = `Attendance_${sectionName}_${dateStr}.txt`;
+
+      // 4. Save to Android Documents
+      await Filesystem.writeFile({
+        path: fileName,
+        data: fileContent,
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+        recursive: true
+      });
+
+      alert(`Export Success! Saved as ${fileName} in your Documents folder.`);
+    } catch (error) {
+      console.error('TXT Export failed', error);
+      alert("Export failed! Make sure you have storage permissions enabled.");
+    }
+  };
+
   const currentSectionStudents = useMemo(() => {
     const filtered = students.filter(s => s.sectionId === selectedSectionId);
     return [...filtered].sort((a, b) => {
@@ -283,6 +319,7 @@ const App: React.FC = () => {
   }, [students, selectedSectionId, sortKey, sortOrder]);
 
   const selectedSection = sections.find(s => s.id === selectedSectionId);
+  
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
@@ -644,6 +681,12 @@ const App: React.FC = () => {
                           className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 text-slate-700 dark:text-slate-300 font-bold py-2 rounded-lg text-xs transition-all shadow-sm"
                         >
                           <i className="fas fa-download mr-1"></i> Export
+                        </button>
+                        <button 
+                          onClick={() => exportSessionAsTxt(session)}
+                          className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center gap-1"
+                        >
+                          <i className="fas fa-file-alt"></i> TXT
                         </button>
                         <button onClick={() => setSessions(sessions.filter(s => s.id !== session.id))} className="px-3 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-lg text-xs hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
                           <i className="fas fa-trash-alt"></i>
