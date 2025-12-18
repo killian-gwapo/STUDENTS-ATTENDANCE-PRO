@@ -1,6 +1,6 @@
 {
-  "appId": "com.yourname.attendanceqrpro",
+  "appId": "io.ionic.starter",
   "appName": "AttendanceQR Pro",
   "webDir": "dist",
-  "bundledWebRuntime": false 
+  "bundledWebRuntime": false
 }
