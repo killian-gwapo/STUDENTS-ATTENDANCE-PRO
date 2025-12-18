@@ -1,10 +1,6 @@
-
 {
-  "appId": "com.attendancepro.app",
-  "appName": "AttendancePro",
-  "webDir": ".",
-  "bundledWebRuntime": false,
-  "server": {
-    "androidScheme": "https"
-  }
+  "appId": "com.yourname.attendanceqrpro",
+  "appName": "AttendanceQR Pro",
+  "webDir": "dist",
+  "bundledWebRuntime": false 
 }
