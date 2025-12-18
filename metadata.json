@@ -1,5 +1,5 @@
 {
-  "name": "AttendanceQR Pro",
+  "name": "AttendanceQR Pro ANDROID",
   "description": "Bulk generate student QR codes and manage attendance in one seamless application. Supports text file imports and real-time QR scanning.",
   "requestFramePermissions": [
     "camera"

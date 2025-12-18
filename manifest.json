@@ -1,0 +1,16 @@
+
+{
+  "short_name": "AttendancePro",
+  "name": "AttendanceQR Pro Management",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/241/241528.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4338ca",
+  "background_color": "#020617"
+}

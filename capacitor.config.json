@@ -1,0 +1,10 @@
+
+{
+  "appId": "com.attendancepro.app",
+  "appName": "AttendancePro",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -20,7 +20,6 @@ const App: React.FC = () => {
   const [lastScanned, setLastScanned] = useState<{name: string, id: string, time: string, contact?: string} | null>(null);
   const [scanStatus, setScanStatus] = useState<'success' | 'error' | 'idle'>('idle');
   
-  // Sorting state
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
@@ -35,7 +34,6 @@ const App: React.FC = () => {
   const [manualParent, setManualParent] = useState('');
   const [newSectionName, setNewSectionName] = useState('');
 
-  // Fixed Dark Mode Logic
   useEffect(() => {
     const root = window.document.documentElement;
     if (darkMode) {
@@ -46,7 +44,6 @@ const App: React.FC = () => {
     localStorage.setItem('aqr_dark_mode', darkMode.toString());
   }, [darkMode]);
 
-  // Load persistence
   useEffect(() => {
     const savedSections = localStorage.getItem('aqr_sections_list');
     const savedStudents = localStorage.getItem('aqr_students');
@@ -57,7 +54,6 @@ const App: React.FC = () => {
     if (savedSessions) setSessions(JSON.parse(savedSessions));
   }, []);
 
-  // Save persistence
   useEffect(() => {
     localStorage.setItem('aqr_sections_list', JSON.stringify(sections));
     localStorage.setItem('aqr_students', JSON.stringify(students));
@@ -165,7 +161,6 @@ const App: React.FC = () => {
     }
 
     if (activeSession.records.find(r => r.studentId === studentId)) {
-      // Still show the student info but maybe don't add record again
       setLastScanned({ 
         name: student.name, 
         id: student.id, 
@@ -239,16 +234,12 @@ const App: React.FC = () => {
     const folder = zip.folder(`QR_Codes_${currentSection?.name || 'Section'}`);
     
     setIsLoading(true);
-    
     const currentSectionStudentsList = students.filter(s => s.sectionId === selectedSectionId);
     
     const promises = currentSectionStudentsList.map(student => {
       return new Promise<void>((resolve) => {
         const svg = document.getElementById(`qr-${student.id}`);
-        if (!svg) {
-          resolve();
-          return;
-        }
+        if (!svg) { resolve(); return; }
         const svgData = new XMLSerializer().serializeToString(svg);
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -262,9 +253,7 @@ const App: React.FC = () => {
             ctx.drawImage(img, 0, 0);
           }
           canvas.toBlob((blob) => {
-            if (blob) {
-              folder?.file(`${student.name}_${student.id}.png`, blob);
-            }
+            if (blob) { folder?.file(`${student.name}_${student.id}.png`, blob); }
             resolve();
           }, "image/png");
         };
@@ -273,7 +262,6 @@ const App: React.FC = () => {
     });
 
     await Promise.all(promises);
-    
     const content = await zip.generateAsync({ type: "blob" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(content);
@@ -282,7 +270,6 @@ const App: React.FC = () => {
     setIsLoading(false);
   };
 
-  // Memoized sorted students
   const currentSectionStudents = useMemo(() => {
     const filtered = students.filter(s => s.sectionId === selectedSectionId);
     return [...filtered].sort((a, b) => {
@@ -343,7 +330,6 @@ const App: React.FC = () => {
 
       <main className="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
         
-        {/* SECTIONS MANAGEMENT VIEW */}
         {view === 'sections' && (
           <div className="max-w-4xl mx-auto space-y-8 animate-fadeIn">
             <header>
@@ -420,7 +406,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* STUDENT GENERATOR VIEW */}
         {view === 'generator' && (
           <div className="space-y-8 animate-fadeIn">
             <div className="flex items-center justify-between">
@@ -465,7 +450,6 @@ const App: React.FC = () => {
                   </button>
                 )}
                 
-                {/* Sorting Controls */}
                 {currentSectionStudents.length > 0 && (
                   <div className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg ml-auto shadow-sm">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Sort By</span>
@@ -514,7 +498,7 @@ const App: React.FC = () => {
             {isLoading && (
               <div className="flex flex-col items-center justify-center p-12 bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
-                <p className="text-slate-600 dark:text-slate-300">Working on it...</p>
+                <p className="text-slate-600 dark:text-slate-300">Processing...</p>
               </div>
             )}
 
@@ -539,7 +523,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* SCANNER VIEW */}
         {view === 'scanner' && (
           <div className="max-w-2xl mx-auto space-y-6 animate-fadeIn">
             <header className="text-center">
@@ -574,7 +557,6 @@ const App: React.FC = () => {
                   )}
                 </div>
 
-                {/* Quick Notify Prompt after Scan */}
                 {lastScanned && scanStatus === 'idle' && (
                    <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl p-4 flex items-center justify-between animate-fadeIn">
                      <div className="flex items-center gap-3">
@@ -594,17 +576,17 @@ const App: React.FC = () => {
                          <i className="fas fa-paper-plane"></i> Notify Parent
                        </button>
                      ) : (
-                       <span className="text-[10px] text-slate-400 dark:text-slate-600 font-medium italic">No parent contact saved</span>
+                       <span className="text-[10px] text-slate-400 dark:text-slate-600 font-medium italic">No contact</span>
                      )}
                    </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center transition-colors">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center">
                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold mb-1">Total Scanned</p>
                     <p className="text-3xl font-black text-slate-800 dark:text-white">{activeSession.records.length}</p>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center items-center transition-colors">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center items-center">
                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold mb-1">Active Section</p>
                     <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400 truncate w-full text-center">{selectedSection?.name}</p>
                   </div>
@@ -619,7 +601,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* RECORDS VIEW */}
         {view === 'records' && (
           <div className="space-y-8 animate-fadeIn">
             <header>
@@ -635,11 +616,11 @@ const App: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {sessions.map(session => (
-                  <div key={session.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col transition-colors">
+                  <div key={session.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
                     <div className="bg-slate-50 dark:bg-slate-800 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
                       <div>
                         <h3 className="font-bold text-slate-800 dark:text-slate-200">{session.date}</h3>
-                        <p className="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase font-black">{sections.find(s => s.id === session.sectionId)?.name || 'Unknown Section'}</p>
+                        <p className="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase font-black">{sections.find(s => s.id === session.sectionId)?.name || 'Unknown'}</p>
                       </div>
                       <div className="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs font-bold">{session.records.length} Present</div>
                     </div>
@@ -674,11 +655,9 @@ const App: React.FC = () => {
             )}
           </div>
         )}
-
       </main>
 
-      {/* MOBILE BOTTOM NAV */}
-      <footer className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-3 px-4 flex justify-around items-center sticky bottom-0 z-50 transition-colors">
+      <footer className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-3 px-4 flex justify-around items-center sticky bottom-0 z-50">
         {[
           { icon: 'fa-layer-group', label: 'Sections', id: 'sections' },
           { icon: 'fa-qrcode', label: 'Generator', id: 'generator' },

@@ -1,20 +1,30 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+# 📱 AttendanceQR Pro
 
-This contains everything you need to run your app locally.
+A professional, high-performance attendance management system built with React, Tailwind CSS, and Google Gemini AI.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1ztYWXwsYqhoERFC8DNx_2OL5HH97kBc7
+## ✨ Features
+- **Section Management**: Organize students by classes or groups.
+- **AI Bulk Import**: Upload `.txt` files and let Gemini AI parse names, IDs, and contact info.
+- **Bulk QR Generation**: Generate and download QR codes individually or as a ZIP.
+- **Real-time Scanning**: High-speed QR scanning via device camera.
+- **Parent Notifications**: One-tap SMS notification to parents upon successful check-in.
+- **Dark Mode**: Fully responsive, accessible, and theme-aware UI.
+- **Offline Ready**: Uses local storage for data persistence.
 
-## Run Locally
+## 🛠 Tech Stack
+- **Frontend**: React (ESM)
+- **Styling**: Tailwind CSS
+- **AI**: Google Gemini API (@google/genai)
+- **Scanning**: Html5-Qrcode
+- **Native Wrapper**: Capacitor (Targeting Android APK)
 
-**Prerequisites:**  Node.js
+## 📦 How to build the APK
+1. Push this code to a GitHub Repository.
+2. Install Capacitor CLI: `npm install @capacitor/cli @capacitor/android`.
+3. Add Android platform: `npx cap add android`.
+4. Open in Android Studio: `npx cap open android`.
+5. Build > Build Bundle(s) / APK(s) > Build APK(s).
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🔑 Environment Variables
+- `API_KEY`: Your Google Gemini API Key (Configured in GitHub Secrets for CI/CD).
