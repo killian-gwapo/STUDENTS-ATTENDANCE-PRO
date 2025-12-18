@@ -514,7 +514,7 @@ const App: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {currentSectionStudents.map(student => (
                   <div key={student.id} className="relative group animate-fadeIn">
-                    <QRCard student={student} onDownload={downloadQR} />
+                    <QRCard student={student} />
                     <button onClick={() => setStudents(students.filter(s => s.id !== student.id))} className="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg"><i className="fas fa-times text-[10px]"></i></button>
                   </div>
                 ))}
