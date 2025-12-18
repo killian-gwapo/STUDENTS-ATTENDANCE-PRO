@@ -1,0 +1,30 @@
+
+name: Android Build Preparation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build Web App
+        run: npm run build
+        
+      - name: Sync Capacitor
+        run: |
+          npx cap sync
+          echo "Web assets synced for Android build."
