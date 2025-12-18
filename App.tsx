@@ -322,7 +322,7 @@ const App: React.FC = () => {
   
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div className="fixed inset-0 flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300 overflow-hidden">
       <nav className="bg-indigo-700 dark:bg-indigo-950 text-white shadow-lg sticky top-0 z-50 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -365,7 +365,7 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      <main className="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="flex-grow w-full max-w-7xl mx-auto p-4 overflow-y-auto scrollbar-thin">
         
         {view === 'sections' && (
           <div className="max-w-4xl mx-auto space-y-8 animate-fadeIn">
@@ -719,7 +719,9 @@ const App: React.FC = () => {
       </footer>
 
       <style dangerouslySetInnerHTML={{ __html: `
+        html, body { overscroll-behavior-y: none; height: 100%; overflow: hidden; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
         .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
         .scrollbar-thin::-webkit-scrollbar { width: 4px; }
         .scrollbar-thin::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
